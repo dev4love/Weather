@@ -1,6 +1,11 @@
 # coding: utf8
-import ConfigParser
 import os
+import sys
+
+if sys.version_info < (3,):
+    import ConfigParser as cp
+else:
+    import configparser as cp
 
 
 class ConfParser:
@@ -14,7 +19,7 @@ class ConfParser:
             u'value': u''
         }
 
-        parser = ConfigParser.ConfigParser()
+        parser = cp.ConfigParser()
         parser.read(self.path)
         try:
             value = parser.get(section, option)
@@ -22,7 +27,7 @@ class ConfParser:
             result[u'value'] = value
             result[u'msg'] = u'success'
 
-        except ConfigParser.NoOptionError, err:
+        except cp.NoOptionError as err:
             result[u'code'] = 404
             result[u'msg'] = err.message
 
@@ -32,4 +37,4 @@ class ConfParser:
 if __name__ == '__main__':
     print(os.path.abspath(u'../conf.ini'))
     parser = ConfParser(u'../conf.ini')
-    print parser.getConf(u'url', u'search')
+    print(parser.getConf(u'url', u'search'))

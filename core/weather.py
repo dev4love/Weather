@@ -2,7 +2,7 @@
 """
 This module is designed for parse the weather data
 """
-from conf import ConfParser
+from core.conf import ConfParser
 
 import requests
 
@@ -48,5 +48,5 @@ class WeatherAPI:
 
 if __name__ == '__main__':
     api = WeatherAPI(ConfParser(u'../conf.ini'))
-    cityinfo = api.queryCityInfo(u'纽约')
-    print api.getWeather(cityinfo[0].get(u'id'))
+    cityinfo = api.queryCityInfo(u'beijing')
+    print(api.getWeather(cityinfo[0].get(u'id')))

@@ -34,15 +34,15 @@ def choose_city(citysinfo, index):
             cityinfo = citysinfo[index]
             show_weather(cityinfo)
         else:
-            index = raw_input('请输入正确的数字编号:')
+            index = input('请输入正确的数字编号:')
             choose_city(citysinfo, index)
     except:
-        index = raw_input('请输入正确的数字编号:')
+        index = input('请输入正确的数字编号:')
         choose_city(citysinfo, index)
 
 
 def accept_input():
-    city_name = raw_input('请输入希望查询的城市名或拼音:')
+    city_name = input('请输入希望查询的城市名或拼音:')
     citysinfo = api.queryCityInfo(city_name)
     if len(citysinfo) > 0:
         if len(citysinfo) == 1:
@@ -56,7 +56,7 @@ def accept_input():
                 print(temp % (count, city.get(u'city_name_ch'), city.get(u'parent_name_ch')))
                 count += 1
 
-            index = raw_input(u'\n>')
+            index = input(u'\n>')
             choose_city(citysinfo, index)
     else:
         print('没有查询到相关城市!')
