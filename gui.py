@@ -20,7 +20,7 @@ class APP:
     def __init__(self):
         self.win = tk.Tk()
         self.win.title(u'Assistant')
-        self.win.iconbitmap(r'res/app.ico')
+        # self.win.iconbitmap(r'res/app.ico')
 
         self.api = WeatherAPI(ConfParser(u'conf.ini'))
 
@@ -56,6 +56,7 @@ class APP:
             self._shwoWeather(cities[0].get(u'id'))
 
     def _shwoWeather(self, cityId):
+        self.info.delete('1.0', tk.END)
         weather_content = self.api.getWeather(cityId)
         soup = BeautifulSoup(weather_content, u'html.parser')
 
