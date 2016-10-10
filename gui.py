@@ -1,5 +1,9 @@
 # coding: utf-8
-import sys
+import sys, os
+
+curPath = os.path.abspath(os.path.dirname(__file__))
+rootPath = os.path.split(curPath)[0]
+sys.path.append(rootPath)
 
 if sys.version_info < (3,):
     import Tkinter as tk
@@ -12,6 +16,9 @@ else:
     from tkinter import messagebox
 
 from bs4 import BeautifulSoup, NavigableString, Tag
+
+from threading import Thread
+
 from core.weather import WeatherAPI
 from core.conf import ConfParser
 
@@ -20,28 +27,35 @@ class APP:
     def __init__(self):
         self.win = tk.Tk()
         self.win.title(u'Assistant')
-        # self.win.iconbitmap(r'res/app.ico')
+        self.win.iconbitmap(r'./res/app.ico')
 
         self.api = WeatherAPI(ConfParser(u'conf.ini'))
 
         self.createWidget()
 
     def createWidget(self):
-
-        label1 = ttk.Label(self.win, text='请输入城市名:')
-        label1.grid(sticky=tk.W, column=0, row=0)
+        label1 = ttk.Label(self.win, text=u'请输入城市名:')
+        label1.grid(sticky=tk.W, row=0, column=0)
 
         self.cityName = tk.StringVar()
         searchBox = ttk.Entry(self.win, width=12, textvariable=self.cityName)
-        searchBox.grid(sticky=tk.W, column=0, row=1)
+        searchBox.grid(sticky=u'WE', row=0, column=1)
+        searchBox.focus()
 
-        searchBtn = ttk.Button(self.win, text='Search', command=self._searchCity)
-        searchBtn.grid(column=1, row=1)
+        searchBtn = ttk.Button(self.win, text=u'Search', command=self._search)
+        searchBtn.grid(sticky=u'WE', row=1, columnspan=2)
 
         self.info = scrolledtext.ScrolledText(self.win, width=60, height=15, wrap=tk.WORD)
-        self.info.grid(column=0, sticky='WE', columnspan=2)
+        self.info.grid(column=0, sticky=u'WE', columnspan=2)
+
+    def _search(self):
+        searchThread = Thread(target=self._searchCity)
+        searchThread.setDaemon(True)
+        searchThread.start()
 
     def _searchCity(self):
+        self.info.delete(u'1.0', tk.END)
+
         _cityName = self.cityName.get()
         if len(_cityName) == 0:
             messagebox.showwarning(u'please input a city name', u'please input a city name for search.')
@@ -50,13 +64,14 @@ class APP:
             cities = self.api.queryCityInfo(_cityName)
             print(cities)
             if len(cities) == 0:
-                messagebox.showerror(u'没有查询到城市！')
+                messagebox.showerror(u'没有查询到城市', u'没有查询到城市，请检查输入！')
                 return
-
-            self._shwoWeather(cities[0].get(u'id'))
+            city = cities[0]
+            self.info.insert(tk.INSERT, u'正在为您查询 #%s, %s# 的天气...\n\n\n' % (
+                city.get(u'city_name_ch'), city.get(u'parent_name_ch')))
+            self._shwoWeather(city.get(u'id'))
 
     def _shwoWeather(self, cityId):
-        self.info.delete('1.0', tk.END)
         weather_content = self.api.getWeather(cityId)
         soup = BeautifulSoup(weather_content, u'html.parser')
 
