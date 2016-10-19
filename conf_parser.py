@@ -7,10 +7,14 @@ if sys.version_info < (3,):
 else:
     import configparser as cp
 
+prjDir = os.path.split(os.path.realpath(__file__))[0]
+conf_path = os.path.join(prjDir, u'conf.ini')
+print(conf_path)
 
-class ConfParser:
-    def __init__(self, path):
-        self.path = path
+
+class Parser:
+    def __init__(self):
+        self.path = conf_path
 
     def getConf(self, section, option):
         result = {
@@ -35,6 +39,5 @@ class ConfParser:
 
 
 if __name__ == '__main__':
-    print(os.path.abspath(u'../conf.ini'))
-    parser = ConfParser(u'../conf.ini')
+    parser = Parser()
     print(parser.getConf(u'url', u'search'))

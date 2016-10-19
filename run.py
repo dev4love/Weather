@@ -1,10 +1,10 @@
 # coding: utf8
-from bs4 import BeautifulSoup, NavigableString, Tag
+from bs4 import BeautifulSoup, Tag
 
-from core.conf import ConfParser
+from conf_parser import Parser
 from core.weather import WeatherAPI
 
-api = WeatherAPI(ConfParser(u'conf.ini'))
+api = WeatherAPI(Parser())
 
 
 def show_weather(cityinfo):

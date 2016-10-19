@@ -1,5 +1,6 @@
 # coding: utf-8
-import sys, os
+import os
+import sys
 
 curPath = os.path.abspath(os.path.dirname(__file__))
 rootPath = os.path.split(curPath)[0]
@@ -17,12 +18,12 @@ else:
     from tkinter import messagebox
     from tkinter.simpledialog import askinteger
 
-from bs4 import BeautifulSoup, NavigableString, Tag
+from bs4 import BeautifulSoup, Tag
 
 from threading import Thread
 
 from core.weather import WeatherAPI
-from core.conf import ConfParser
+from conf_parser import Parser
 
 
 class APP:
@@ -31,7 +32,7 @@ class APP:
         self.win.title(u'Assistant')
         self.win.iconbitmap(r'./res/app.ico')
 
-        self.api = WeatherAPI(ConfParser(u'conf.ini'))
+        self.api = WeatherAPI(Parser())
 
         self.createWidget()
 
